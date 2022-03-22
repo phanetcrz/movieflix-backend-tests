@@ -1,24 +1,50 @@
 package com.devsuperior.movieflix.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tb_user")
 public class User implements Serializable { 
 	private static final long serialVersionUID = 1L;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	
+	@Column(unique= true)
 	private String email;
 	private String password;
+	
+	@ManyToMany(fetch = FetchType.EAGER) 					//-- FetchType.EAGER força, para que quando chamar o usuário, traga juntos os "roles" que são os perfis dos usuários     
+	@JoinTable(name = "tb_user_role",    					//-- joinColumns Pega da propria classe e o inverseJoinColumns pega o tipo que estiver na coleção
+	joinColumns = @JoinColumn(name = "user_id"),        //-- nome da chave estrangeira da tabela que estou relacionando que no caso é a USer 
+    inverseJoinColumns = @JoinColumn(name = "role_id"))	//-- Assossiação muitos p muitos se coloca o SET pois ele garante que não haverá repetição	
+	private Set<Role> roles = new HashSet<>();
 	
 	public User() {		
 	}
 
-	public User(Long id, String name, String email, String password) {
+	public User(Long id, String name, String email, String password, Set<Role> roles) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
+		this.roles = roles;
 	}
 
 	public Long getId() {
@@ -53,6 +79,14 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -76,6 +110,5 @@ public class User implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-	
+	}	
 }
