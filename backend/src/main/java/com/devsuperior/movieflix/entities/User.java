@@ -1,7 +1,9 @@
 package com.devsuperior.movieflix.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -34,6 +37,9 @@ public class User implements Serializable {
 	joinColumns = @JoinColumn(name = "user_id"),        //-- nome da chave estrangeira da tabela que estou relacionando que no caso é a USer 
     inverseJoinColumns = @JoinColumn(name = "role_id"))	//-- Assossiação muitos p muitos se coloca o SET pois ele garante que não haverá repetição	
 	private Set<Role> roles = new HashSet<>();
+		
+	@OneToMany(mappedBy = "user")
+	private List<Review> reviews = new ArrayList<>();
 	
 	public User() {		
 	}
